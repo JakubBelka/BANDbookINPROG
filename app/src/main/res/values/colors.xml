@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#000048</color>
+    <color name="colorPrimaryDark">#000033</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="colorPanel1">#00FFC4</color>
+    <color name="colorPanel2">#1B68A7</color>
+    <color name="colorPanel3">#99ccff</color>
+    <color name="colorPanel4">#0099dd</color>
+    <color name="colorText">#ffffee</color>
+    <color name="colorLogoBackground">#99ccff</color>
+    <color name="inactive_sort_button">#A1706E77</color>
+
+
+</resources>

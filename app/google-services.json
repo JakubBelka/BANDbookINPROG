@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "167939750945",
+    "firebase_url": "https://bandsongsbook.firebaseio.com",
+    "project_id": "bandsongsbook",
+    "storage_bucket": "bandsongsbook.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:167939750945:android:2f349bf6303f62fdee3760",
+        "android_client_info": {
+          "package_name": "com.e.bandbook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "167939750945-u4au34q4ii3vsebr28ka42vab8kep2d4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.e.bandbook",
+            "certificate_hash": "53596a74820a57739ba245076797e230ee030c5f"
+          }
+        },
+        {
+          "client_id": "167939750945-opl71h2qk4kbhfict5kc0t5l8tr3tb9p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwpuftut9y_WA-pGgvsI81f4zsIqZpkhU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "167939750945-opl71h2qk4kbhfict5kc0t5l8tr3tb9p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
