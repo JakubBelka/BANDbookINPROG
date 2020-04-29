@@ -1,6 +1,7 @@
 package com.e.bandbook.Helpers;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.e.bandbook.Observer.TextDownloadObserver;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -29,7 +30,6 @@ public class FireBaseClient {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
-            // do your stuff
         } else {
             mAuth.signInAnonymously();
         }
@@ -48,6 +48,7 @@ public class FireBaseClient {
             @Override
             public void onFailure(Exception exception) {
                 exception.printStackTrace();
+                Toast.makeText(context, "Błąd. Sprawdź połączenie z internetem", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -2,9 +2,9 @@ package com.e.bandbook.Helpers;
 
 import java.io.File;
 
-public class Song {
-    String title;
-    String constructor;
+public class Song implements Comparable {
+    public String title;
+    public String constructor;
     public File file;
 
     public Song(File file) {
@@ -19,5 +19,10 @@ public class Song {
             this.title = file.getName();
             this.constructor = file.getName();
         }
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return title.compareTo(o.toString());
     }
 }

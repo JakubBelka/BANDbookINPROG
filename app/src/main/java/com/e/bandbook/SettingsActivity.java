@@ -45,19 +45,20 @@ public class SettingsActivity extends AppCompatActivity {
         if(requestCode == PICK_PDF_CODE && resultCode == RESULT_OK && data!=null){
             pathEditText.setText(data.getData().getPath());
 
-                saveToPreferences(TextDirectory.getPath(data.getData().getPath()));
+                saveToPreferences(TextDirectory.getPath(data.getData().getPath()), "dir");
+                saveToPreferences(data.getData().getLastPathSegment().split(":")[1], "dirName");
         }
         else{
             pathEditText.setText("Something wrong!");
         }
     }
 
-    void saveToPreferences(String s){
+    void saveToPreferences(String value, String tag){
         sharedPref = this.getSharedPreferences("BANDbook",Context.MODE_PRIVATE);
         editor = sharedPref.edit();
-        editor.putString("dir", s);
+        editor.putString(tag, value);
         editor.apply();
-        System.out.println("xxxxxxxxxxxxxxxxxxxxxxx" + s);
+        System.out.println("======================" + tag + value);
     }
 
 

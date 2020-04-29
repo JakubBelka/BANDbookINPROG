@@ -1,9 +1,11 @@
 package com.e.bandbook.Observer;
 
 import android.app.DownloadManager;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Environment;
 
 import com.e.bandbook.Helpers.Song;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -19,9 +21,10 @@ import io.reactivex.rxjava3.disposables.Disposable;
 
 public class TextDownloadObserver implements Observer<StorageReference> {
     private final Context mContext;
-    File[] file;
-    StorageReference storageReference;
-    SharedPreferences sharedPref;
+    private File[] file;
+    private StorageReference storageReference;
+    private SharedPreferences sharedPref;
+    private long downloadID;
 
 
     public TextDownloadObserver(android.content.Context context, File[] file, StorageReference storageReference) {
@@ -34,15 +37,13 @@ public class TextDownloadObserver implements Observer<StorageReference> {
 
     @Override
     public void onSubscribe(@NonNull Disposable d) {
-
     }
 
     @Override
     public void onNext(@NonNull StorageReference storageReference) {
         if (!isInDirectory(storageReference.getName())) {
-
+            downloadText(storageReference.getName());
         }
-        downloadText(storageReference.getName());
 
     }
 
@@ -91,8 +92,9 @@ public class TextDownloadObserver implements Observer<StorageReference> {
         DownloadManager.Request request = new DownloadManager.Request(uri);
 
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalFilesDir(mContext, sharedPref.getString("dir", "BRAK"), filename);
+      //  request.setDestinationInExternalFilesDir(mContext, sharedPref.getString("dir", "BRAK"), filename);
+        request.setDestinationInExternalPublicDir(sharedPref.getString("dirName", ""), filename);
+        downloadID = downloadManager.enqueue(request);
 
-        downloadManager.enqueue(request);
     }
 }

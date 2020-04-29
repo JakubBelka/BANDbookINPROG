@@ -7,7 +7,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.reactivex.rxjava3.plugins.RxJavaPlugins;
+import io.reactivex.Observable;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,14 +20,18 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.e.bandbook.Helpers.Song;
 import com.e.bandbook.Helpers.TextDirectory;
 import com.e.bandbook.TextList.TextListAdapter;
+import com.jakewharton.rxbinding3.widget.RxTextView;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class TextListActivity extends AppCompatActivity {
 
@@ -34,17 +43,20 @@ public class TextListActivity extends AppCompatActivity {
     Button sortByTitleBtn;
     @BindView(R.id.sort_panel)
     LinearLayout sortPanel;
-    @BindView(R.id.more_options_button)
-    ImageButton moreOptionsBtn;
-    @BindView(R.id.less_options_button)
+    @BindView(R.id.search_panel)
+    LinearLayout searchPanel;
+    @BindView(R.id.less_option_button)
     ImageButton lessOptionsBtn;
+    @BindView(R.id.search_button)
+    ImageButton searchButton;
+    @BindView(R.id.search_edit_text)
+    EditText searchEditText;
 
-    SharedPreferences sharedPref;
-    TextDirectory textDirectory;
-    TextListAdapter textListAdapter;
-
-    ArrayList<Song> songs;
-
+    private TextDirectory textDirectory;
+    private TextListAdapter textListAdapter;
+    private ArrayList<Song> songs;
+    private CompositeDisposable compositeDisposable;
+    private Disposable disposable;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -52,11 +64,9 @@ public class TextListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_text_list);
         ButterKnife.bind(this);
-        RxJavaPlugins.setErrorHandler(throwable -> {
-        });
 
-
-        sharedPref = this.getSharedPreferences("BANDbook", Context.MODE_PRIVATE);
+        compositeDisposable = new CompositeDisposable();
+        SharedPreferences sharedPref = this.getSharedPreferences("BANDbook", Context.MODE_PRIVATE);
 
         textDirectory = new TextDirectory(this);
         songs = new ArrayList<>();
@@ -65,7 +75,33 @@ public class TextListActivity extends AppCompatActivity {
         textListAdapter = new TextListAdapter(songs, this);
         recyclerView.setAdapter(textListAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
+        disposable = RxTextView.textChanges(searchEditText)
+                .flatMapSingle(this::findSongs)
+                .debounce(300, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(item -> {
+                            songs.clear();
+                            songs.addAll(item);
+                            textListAdapter.notifyDataSetChanged();
+                        });
+
+                        compositeDisposable.add(disposable);
     }
+
+    private Single<List<Song>> findSongs(CharSequence input) {
+        return Observable.fromIterable(songs)
+                .filter(item -> item.file
+                        .getName()
+                        .toLowerCase()
+                        .contains(input.toString().toLowerCase()))
+                .distinct()
+                .toSortedList();
+
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @OnClick(R.id.sort_by_contractor_button)
@@ -86,17 +122,18 @@ public class TextListActivity extends AppCompatActivity {
         textListAdapter.notifyDataSetChanged();
     }
 
-    @OnClick(R.id.more_options_button)
+    @OnClick(R.id.search_button)
     void showMoreOptions() {
-        sortPanel.setVisibility(View.VISIBLE);
-        moreOptionsBtn.setVisibility(View.INVISIBLE);
+        searchPanel.setVisibility(View.VISIBLE);
+        searchButton.setVisibility(View.INVISIBLE);
 
     }
 
-    @OnClick(R.id.less_options_button)
+    @OnClick(R.id.less_option_button)
     void showLessOptions() {
-        sortPanel.setVisibility(View.GONE);
-        moreOptionsBtn.setVisibility(View.VISIBLE);
+        searchPanel.setVisibility(View.GONE);
+        searchButton.setVisibility(View.VISIBLE);
+
     }
 
 
